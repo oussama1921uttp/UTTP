@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ULTRAS THE TWELFTH PLAYER</title>
+  
+  <!-- jsPDF & AutoTable for PDF Generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+  <style>
+    /* ULTRAS THE TWELFTH PLAYER - BLACK, GREEN & RED MOBILE DESIGN */
+    :root {
+      --bg-black: #0d0f0d;
+      --card-bg: #161b17;
+      --card-border: #263328;
+
+      --green-main: #00e676;
+      --green-dark: #00a851;
+      --green-bg: rgba(0, 230, 118, 0.12);
+
+      --red-main: #ff3d57;
+      --red-dark: #c62828;
+      --red-bg: rgba(255, 61, 87, 0.12);
+
+      --text-white: #ffffff;
+      --text-muted: #9eb0a2;
+
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-black);
+      color: var(--text-white);
+      line-height: 1.5;
+      direction: rtl;
+      padding-bottom: 30px;
+    }
+
+    /* TOPBAR */
+    .topbar {
+      background-color: #050705;
+      border-bottom: 2px solid var(--green-dark);
+      padding: 12px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .topbar-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .logo-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-box img {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: 2px solid var(--green-main);
+      object-fit: cover;
+      background: #000;
+    }
+
+    .brand h1 {
+      font-size: 14px;
+      color: var(--green-main);
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .brand p {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .btn-admin {
+      background: transparent;
+      border: 1px solid var(--green-main);
+      color: var(--green-main);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* CONTAINER */
+    .container {
+      max-width: 800px;
+      margin: 16px auto;
+      padding: 0 14px;
+    }
+
+    /* CARDS */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .card h2 {
+      font-size: 18px;
+      color: var(--green-main);
+      margin-bottom: 14px;
+    }
+
+    /* FORMS */
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      background: #090c0a;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--green-main);
+    }
+
+    .inline-form {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* BUTTONS */
+    .btn {
+      padding: 12px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--green-main);
+      color: #000;
+    }
+
+    .btn-secondary {
+      background: #2a332c;
+      color: #fff;
+    }
+
+    .btn-danger {
+      background: var(--red-main);
+      color: #fff;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .btn-pdf {
+      background: #c62828;
+      color: #fff;
+      border: 1px solid var(--red-main);
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .button-group .btn {
+      flex: 1;
+    }
+
+    .msg {
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    /* STATS */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 12px;
+      text-align: center;
+    }
+
+    .stat-card h3 {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .stat-card p {
+      font-size: 22px;
+      font-weight: bold;
+      color: var(--green-main);
+    }
+
+    .stat-card.danger p {
+      color: var(--red-main);
+    }
+
+    .section-title {
+      font-size: 16px;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .search-box {
+      margin-bottom: 14px;
+    }
+
+    /* VERTICAL MEMBERS LIST */
+    .members-vertical-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .member-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+
+    .member-card:active {
+      transform: scale(0.98);
+    }
+
+    .member-main {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .member-role {
+      background: #252e27;
+      color: var(--green-main);
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .member-name {
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    .status-badge {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: bold;
+    }
+
+    .status-badge.paid {
+      background: var(--green-bg);
+      color: var(--green-main);
+      border: 1px solid var(--green-dark);
+    }
+
+    .status-badge.unpaid {
+      background: var(--red-bg);
+      color: var(--red-main);
+      border: 1px solid var(--red-dark);
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--text-muted);
+      padding: 20px;
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 200;
+    }
+
+    .modal-overlay[hidden] {
+      display: none !important;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      border: 1px solid var(--green-main);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 400px;
+      padding: 20px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .modal-badge {
+      display: inline-block;
+      background: var(--green-dark);
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      margin-bottom: 12px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 13px;
+      border-bottom: 1px dashed #202b22;
+      padding-bottom: 4px;
+    }
+
+    .history-box {
+      margin-top: 15px;
+      background: #0a0e0b;
+      padding: 10px;
+      border-radius: 8px;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    .history-box h4 {
+      font-size: 12px;
+      color: var(--green-main);
+      margin-bottom: 6px;
+    }
+
+    .history-box ul {
+      list-style: none;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .history-box li {
+      padding: 6px 0;
+      border-bottom: 1px solid #172118;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="topbar">
+    <div class="topbar-container">
+      <div class="logo-box">
+        <img id="logoPreview" src="logo.jpg" alt="Logo" onerror="this.src='logo.jpg'">
+        <div class="brand">
+          <h1>ULTRAS THE TWELFTH PLAYER</h1>
+          <p>ONE TEAM · ONE FAMILY</p>
+        </div>
+      </div>
+      <button id="adminButton" type="button" class="btn-admin">دخول المدير</button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- LOGIN PANEL -->
+    <section id="loginPanel" class="card" hidden>
+      <h2>تسجيل دخول المدير</h2>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="adminUsername">اسم المستخدم</label>
+          <input id="adminUsername" type="text" placeholder="اسم المستخدم" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label for="adminPassword">كلمة المرور</label>
+          <input id="adminPassword" type="password" placeholder="كلمة المرور" required autocomplete="current-password">
+        </div>
+        <div class="button-group">
+          <button class="btn btn-primary" type="submit">دخول</button>
+          <button class="btn btn-secondary" id="closeLogin" type="button">إغلاق</button>
+        </div>
+        <p id="loginMessage" class="msg"></p>
+      </form>
+    </section>
+
+    <!-- ADMIN PANEL -->
+    <section id="adminPanel" class="card" hidden>
+      <div class="admin-header">
+        <h2>لوحة إشراف المدير</h2>
+        <button id="downloadPdfBtn" class="btn btn-pdf">📄 تحميل جدول الأعضاء (PDF)</button>
+      </div>
+
+      <!-- ADD MEMBER -->
+      <div class="admin-section">
+        <h3>إضافة عضو جديد</h3>
+        <form id="addMemberForm" class="inline-form">
+          <input id="memberName" type="text" placeholder="اسم العضو الجديد" required>
+          <button class="btn btn-primary" type="submit">إضافة</button>
+        </form>
+      </div>
+
+      <!-- RECORD PAYMENT -->
+      <div class="admin-section" style="margin-top: 15px;">
+        <h3>تسجيل دفع اشتراك</h3>
+        <form id="paymentForm">
+          <div class="form-group">
+            <label for="paymentMemberSelect">اختر العضو</label>
+            <select id="paymentMemberSelect" required>
+              <option value="">-- اختر عضواً --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="paymentPlan">نوع الاشتراك / الدفعة</label>
+            <select id="paymentPlan" required>
+              <option value="weekly">اشتراك أسبوعي (500 دج)</option>
+              <option value="monthly">اشتراك شهري (2000 دج)</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" type="submit">تسجيل الدفعة</button>
+        </form>
+      </div>
+
+      <p id="adminMessage" class="msg"></p>
+      <button id="logoutButton" class="btn btn-danger" type="button">تسجيل الخروج</button>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats">
+      <div class="stat-card">
+        <h3>الإجمالي</h3>
+        <p id="totalMembers">0</p>
+      </div>
+      <div class="stat-card success">
+        <h3>قام بالدفع</h3>
+        <p id="paidMembers">0</p>
+      </div>
+      <div class="stat-card danger">
+        <h3>لم يدفع بعد</h3>
+        <p id="unpaidMembers">0</p>
+      </div>
+    </section>
+
+    <!-- SEARCH & MEMBERS LIST -->
+    <section>
+      <h2 class="section-title">قائمة الأعضاء</h2>
+      <div class="search-box">
+        <input id="searchInput" type="search" placeholder="ابحث باسم العضو...">
+      </div>
+
+      <div id="membersList" class="members-vertical-list">
+        <p class="empty">جارٍ تحميل الأعضاء...</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MEMBER DETAILS MODAL -->
+  <div id="memberModal" class="modal-overlay" hidden>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalMemberName">تفاصيل العضو</h3>
+        <button id="closeModal" class="close-btn" type="button">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-badge">عضو</p>
+        <div class="info-row">
+          <span>حالة الدفع:</span>
+          <strong id="modalStatus">--</strong>
+        </div>
+        <div class="info-row">
+          <span>عدد الدفعات الإجمالي:</span>
+          <strong id="modalPayCount">0 دفعات</strong>
+        </div>
+        <div class="info-row">
+          <span>المبلغ الإجمالي المدفوع:</span>
+          <strong id="modalTotalPaid">0 دج</strong>
+        </div>
+
+        <div class="history-box">
+          <h4>سجل الدفعات الحالية</h4>
+          <ul id="modalPaymentHistory">
+            <li>لا يوجد دفعات مسجلة بعد</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>ULTRAS THE TWELFTH PLAYER · ONE TEAM ONE FAMILY</p>
+  </footer>
+
+  <!-- SCRIPT LOGIC -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import {
+      getFirestore, collection, addDoc, getDocs, onSnapshot, updateDoc, doc, arrayUnion, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCeBt-PwOezIPEoMIMKyR9Jlc2ZsDwY-LE",
+      authDomain: "uttp-52243.firebaseapp.com",
+      projectId: "uttp-52243",
+      storageBucket: "uttp-52243.firebasestorage.app",
+      messagingSenderId: "329737636080",
+      appId: "1:329737636080:web:9694c31a4d4faa035fda35"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const ADMIN_USER = "youba";
+    const ADMIN_PASS = "UTTP";
+
+    let membersCache = [];
+    let isAdmin = false;
+
+    const $ = (id) => document.getElementById(id);
+
+    function showMsg(id, text, isSuccess = false) {
+      const el = $(id);
+      if (!el) return;
+      el.textContent = text;
+      el.style.color = isSuccess ? "#00e676" : "#ff3d57";
+    }
+
+    // LOGIN / ADMIN TOGGLE
+    $("adminButton")?.addEventListener("click", () => {
+      if (isAdmin) {
+        $("adminPanel").hidden = !$("adminPanel").hidden;
+      } else {
+        $("loginPanel").hidden = !$("loginPanel").hidden;
+      }
+    });
+
+    $("closeLogin")?.addEventListener("click", () => {
+      $("loginPanel").hidden = true;
+    });
+
+    $("loginForm")?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const u = $("adminUsername").value.trim();
+      const p = $("adminPassword").value.trim();
+
+      if (u === ADMIN_USER && p === ADMIN_PASS) {
+        isAdmin = true;
+        $("loginPanel").hidden = true;
+        $("adminPanel").hidden = false;
+        $("adminButton").textContent = "لوحة المدير";
+        showMsg("adminMessage", "مرحباً بك يا مدير!", true);
+      } else {
+        showMsg("loginMessage", "اسم المستخدم أو كلمة السر غير صحيحة");
+      }
+    });
+
+    $("logoutButton")?.addEventListener("click", () => {
+      isAdmin = false;
+      $("adminPanel").hidden = true;
+      $("adminButton").textContent = "دخول المدير";
+    });
+
+    // LISTEN FOR MEMBERS
+    onSnapshot(collection(db, "members"), (snapshot) => {
+      membersCache = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      renderMembers();
+      updateStats();
+      populateMemberSelect();
+    });
+
+    function hasPaid(m) {
+      return (m.payments && m.payments.length > 0);
+    }
+
+    function renderMembers() {
+      const list = $("membersList");
+      const query = ($("searchInput").value || "").trim().toLowerCase();
+
+      const filtered = membersCache.filter(m => (m.name || "").toLowerCase().includes(query));
+
+      if (filtered.length === 0) {
+        list.innerHTML = '<p class="empty">لا يوجد أعضاء</p>';
+        return;
+      }
+
+      list.innerHTML = filtered.map(m => {
+        const paid = hasPaid(m);
+        const count = (m.payments || []).length;
+        return `
+          <div class="member-card" data-id="${m.id}">
+            <div class="member-main">
+              <span class="member-role">عضو</span>
+              <span class="member-name">${escapeHTML(m.name)}</span>
+            </div>
+            <span class="status-badge ${paid ? 'paid' : 'unpaid'}">
+              ${paid ? `تم الدفع (${count})` : 'لم يدفع'}
+            </span>
+          </div>
+        `;
+      }).join('');
+
+      document.querySelectorAll('.member-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const id = card.getAttribute('data-id');
+          showMemberDetails(id);
+        });
+      });
+    }
+
+    $("searchInput")?.addEventListener("input", renderMembers);
+
+    function updateStats() {
+      const total = membersCache.length;
+      const paidCount = membersCache.filter(hasPaid).length;
+      $("totalMembers").textContent = total;
+      $("paidMembers").textContent = paidCount;
+      $("unpaidMembers").textContent = total - paidCount;
+    }
+
+    function populateMemberSelect() {
+      const sel = $("paymentMemberSelect");
+      if (!sel) return;
+      sel.innerHTML = '<option value="">-- اختر عضواً --</option>' +
+        membersCache.map(m => `<option value="${m.id}">${escapeHTML(m.name)}</option>`).join('');
+    }
+
+    // ADD MEMBER
+    $("addMemberForm")?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = $("memberName").value.trim();
+      if (!name) return;
+
+      try {
+        await addDoc(collection(db, "members"), {
+          name,
+          payments: [],
+          createdAt: serverTimestamp()
+        });
+        $("memberName").value = "";
+        showMsg("adminMessage", "تمت إضافة العضو بنجاح", true);
+      } catch (err) {
+        showMsg("adminMessage", "حدث خطأ أثناء الإضافة");
+      }
+    });
+
+    // RECORD PAYMENT (BY PAYMENT COUNT NUMBER)
+    $("paymentForm")?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const memberId = $("paymentMemberSelect").value;
+      const plan = $("paymentPlan").value;
+
+      if (!memberId) {
+        showMsg("adminMessage", "يرجى اختيار العضو");
+        return;
+      }
+
+      const member = membersCache.find(m => m.id === memberId);
+      if (!member) return;
+
+      const amount = plan === "weekly" ? 500 : 2000;
+      const currentPayments = member.payments || [];
+      const nextIndex = currentPayments.length + 1;
+
+      const paymentRecord = {
+        number: nextIndex,
+        amount: amount,
+        type: plan === "weekly" ? "أسبوعي" : "شهري"
+      };
+
+      try {
+        await updateDoc(doc(db, "members", memberId), {
+          payments: arrayUnion(paymentRecord)
+        });
+        showMsg("adminMessage", `تم تسجيل الدَفعَة ${nextIndex} بمبلغ ${amount} دج للعضو`, true);
+      } catch (err) {
+        showMsg("adminMessage", "تعذر تسجيل الدفعة");
+      }
+    });
+
+    // MODAL DETAILS FUNCTIONS
+    function showMemberDetails(id) {
+      const m = membersCache.find(item => item.id === id);
+      if (!m) return;
+
+      $("modalMemberName").textContent = m.name;
+      const paid = hasPaid(m);
+      $("modalStatus").textContent = paid ? "قام بالدفع" : "لم يدفع بعد";
+      $("modalStatus").style.color = paid ? "#00e676" : "#ff3d57";
+
+      const payments = m.payments || [];
+      $("modalPayCount").textContent = `${payments.length} دفعات`;
+
+      const totalAmount = payments.reduce((sum, p) => sum + (p.amount || 0), 0);
+      $("modalTotalPaid").textContent = `${totalAmount} دج`;
+
+      const historyList = $("modalPaymentHistory");
+      if (payments.length === 0) {
+        historyList.innerHTML = '<li>لا يوجد دفعات مسجلة</li>';
+      } else {
+        historyList.innerHTML = payments.map((p, index) => 
+          `<li><span>الدَفعة ${p.number || (index + 1)} (${p.type})</span> <strong>${p.amount} دج</strong></li>`
+        ).join('');
+      }
+
+      $("memberModal").hidden = false;
+    }
+
+    $("closeModal")?.addEventListener("click", () => {
+      $("memberModal").hidden = true;
+    });
+
+    $("memberModal")?.addEventListener("click", (e) => {
+      if (e.target === $("memberModal")) {
+        $("memberModal").hidden = true;
+      }
+    });
+
+    // DOWNLOAD PDF REPORT FOR ADMIN
+    $("downloadPdfBtn")?.addEventListener("click", () => {
+      if (!isAdmin) return;
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(16);
+      doc.text("ULTRAS THE TWELFTH PLAYER", 105, 15, { align: "center" });
+      doc.setFontSize(12);
+      doc.text("Members Payment Report", 105, 22, { align: "center" });
+
+      const tableData = membersCache.map((m, index) => {
+        const payments = m.payments || [];
+        const count = payments.length;
+        const total = payments.reduce((s, p) => s + (p.amount || 0), 0);
+        const status = count > 0 ? "Paid" : "Unpaid";
+
+        return [
+          index + 1,
+          m.name || "Unknown",
+          "Member",
+          status,
+          `${count} payments`,
+          `${total} DZD`
+        ];
+      });
+
+      doc.autoTable({
+        startY: 30,
+        head: [["#", "Member Name", "Role", "Status", "Payments Count", "Total Paid"]],
+        body: tableData,
+        theme: "grid",
+        headStyles: { fillColor: [0, 168, 81] },
+        styles: { halign: "center" }
+      });
+
+      doc.save(`ULTRAS_Report_${new Date().toISOString().slice(0, 10)}.pdf`);
+    });
+
+    function escapeHTML(str) {
+      return String(str || '').replace(/[&<>"']/g, tag => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[tag]));
+    }
+  </script>
+</body>
+</html>
