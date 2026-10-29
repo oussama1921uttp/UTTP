@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ULTRAS THE TWELFTH PLAYER</title>
   
-  <!-- jsPDF & AutoTable for PDF Generation -->
+  <!-- jsPDF & AutoTable for PDF Export -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
   <style>
     /* ULTRAS THE TWELFTH PLAYER - BLACK, GREEN & RED MOBILE DESIGN */
@@ -184,12 +184,13 @@
     }
 
     .btn-pdf {
-      background: #c62828;
-      color: #fff;
-      border: 1px solid var(--red-main);
+      background: #1b5e20;
+      color: #a5d6a7;
+      border: 1px solid var(--green-main);
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       margin-bottom: 15px;
+      font-size: 14px;
     }
 
     .button-group {
@@ -210,7 +211,7 @@
     /* STATS */
     .stats {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 10px;
       margin-bottom: 20px;
     }
@@ -234,10 +235,6 @@
       color: var(--green-main);
     }
 
-    .stat-card.danger p {
-      color: var(--red-main);
-    }
-
     .section-title {
       font-size: 16px;
       color: #fff;
@@ -252,7 +249,7 @@
     .members-vertical-list {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
     }
 
     .member-card {
@@ -261,14 +258,15 @@
       border-radius: var(--radius);
       padding: 14px 16px;
       display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .member-header {
+      display: flex;
       align-items: center;
       justify-content: space-between;
       cursor: pointer;
-      transition: transform 0.15s;
-    }
-
-    .member-card:active {
-      transform: scale(0.98);
     }
 
     .member-main {
@@ -291,23 +289,55 @@
       font-weight: bold;
     }
 
-    .status-badge {
-      font-size: 12px;
+    .total-badge {
+      font-size: 13px;
       padding: 4px 10px;
       border-radius: 20px;
       font-weight: bold;
-    }
-
-    .status-badge.paid {
       background: var(--green-bg);
       color: var(--green-main);
       border: 1px solid var(--green-dark);
     }
 
-    .status-badge.unpaid {
-      background: var(--red-bg);
+    /* QUICK PAYMENT ACTION BUTTONS (Hidden by default, shown for Admin only) */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      border-top: 1px dashed var(--card-border);
+      padding-top: 10px;
+    }
+
+    .btn-action {
+      border: none;
+      border-radius: 6px;
+      padding: 8px 4px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .btn-add-500 {
+      background: rgba(0, 230, 118, 0.15);
+      color: var(--green-main);
+      border: 1px solid var(--green-dark);
+    }
+
+    .btn-add-2000 {
+      background: var(--green-main);
+      color: #000;
+    }
+
+    .btn-sub-500 {
+      background: rgba(255, 61, 87, 0.15);
       color: var(--red-main);
       border: 1px solid var(--red-dark);
+    }
+
+    .btn-sub-2000 {
+      background: var(--red-main);
+      color: #fff;
     }
 
     .empty {
@@ -382,7 +412,7 @@
       background: #0a0e0b;
       padding: 10px;
       border-radius: 8px;
-      max-height: 180px;
+      max-height: 150px;
       overflow-y: auto;
     }
 
@@ -399,10 +429,8 @@
     }
 
     .history-box li {
-      padding: 6px 0;
+      padding: 4px 0;
       border-bottom: 1px solid #172118;
-      display: flex;
-      justify-content: space-between;
     }
 
     footer {
@@ -419,7 +447,7 @@
   <header class="topbar">
     <div class="topbar-container">
       <div class="logo-box">
-        <img id="logoPreview" src="logo.jpg" alt="Logo" onerror="this.src='logo.jpg'">
+        <img id="logoPreview" src="logo.png" alt="Logo" onerror="this.src='logo.jpg'">
         <div class="brand">
           <h1>ULTRAS THE TWELFTH PLAYER</h1>
           <p>ONE TEAM · ONE FAMILY</p>
@@ -455,7 +483,7 @@
     <section id="adminPanel" class="card" hidden>
       <div class="admin-header">
         <h2>لوحة إشراف المدير</h2>
-        <button id="downloadPdfBtn" class="btn btn-pdf">📄 تحميل جدول الأعضاء (PDF)</button>
+        <button id="downloadPdfBtn" class="btn btn-pdf" type="button">📄 تحميل جدول الأعضاء (PDF)</button>
       </div>
 
       <!-- ADD MEMBER -->
@@ -467,27 +495,6 @@
         </form>
       </div>
 
-      <!-- RECORD PAYMENT -->
-      <div class="admin-section" style="margin-top: 15px;">
-        <h3>تسجيل دفع اشتراك</h3>
-        <form id="paymentForm">
-          <div class="form-group">
-            <label for="paymentMemberSelect">اختر العضو</label>
-            <select id="paymentMemberSelect" required>
-              <option value="">-- اختر عضواً --</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="paymentPlan">نوع الاشتراك / الدفعة</label>
-            <select id="paymentPlan" required>
-              <option value="weekly">اشتراك أسبوعي (500 دج)</option>
-              <option value="monthly">اشتراك شهري (2000 دج)</option>
-            </select>
-          </div>
-          <button class="btn btn-primary" type="submit">تسجيل الدفعة</button>
-        </form>
-      </div>
-
       <p id="adminMessage" class="msg"></p>
       <button id="logoutButton" class="btn btn-danger" type="button">تسجيل الخروج</button>
     </section>
@@ -495,16 +502,12 @@
     <!-- STATS -->
     <section class="stats">
       <div class="stat-card">
-        <h3>الإجمالي</h3>
+        <h3>إجمالي الأعضاء</h3>
         <p id="totalMembers">0</p>
       </div>
-      <div class="stat-card success">
-        <h3>قام بالدفع</h3>
-        <p id="paidMembers">0</p>
-      </div>
-      <div class="stat-card danger">
-        <h3>لم يدفع بعد</h3>
-        <p id="unpaidMembers">0</p>
+      <div class="stat-card">
+        <h3>مجموع المبالغ المحصلة</h3>
+        <p id="totalCollected">0 دج</p>
       </div>
     </section>
 
@@ -532,12 +535,8 @@
       <div class="modal-body">
         <p class="modal-badge">عضو</p>
         <div class="info-row">
-          <span>حالة الدفع:</span>
-          <strong id="modalStatus">--</strong>
-        </div>
-        <div class="info-row">
-          <span>عدد الدفعات الإجمالي:</span>
-          <strong id="modalPayCount">0 دفعات</strong>
+          <span>عدد المرات المدفوعة:</span>
+          <strong id="modalPayCount">0 مرة</strong>
         </div>
         <div class="info-row">
           <span>المبلغ الإجمالي المدفوع:</span>
@@ -545,7 +544,7 @@
         </div>
 
         <div class="history-box">
-          <h4>سجل الدفعات الحالية</h4>
+          <h4>سجل الدفعات</h4>
           <ul id="modalPaymentHistory">
             <li>لا يوجد دفعات مسجلة بعد</li>
           </ul>
@@ -562,7 +561,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import {
-      getFirestore, collection, addDoc, getDocs, onSnapshot, updateDoc, doc, arrayUnion, serverTimestamp
+      getFirestore, collection, addDoc, onSnapshot, updateDoc, doc, serverTimestamp
     } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -616,6 +615,7 @@
         $("adminPanel").hidden = false;
         $("adminButton").textContent = "لوحة المدير";
         showMsg("adminMessage", "مرحباً بك يا مدير!", true);
+        renderMembers(); // إعادة عرض القائمة لتظهر الأزرار للمدير
       } else {
         showMsg("loginMessage", "اسم المستخدم أو كلمة السر غير صحيحة");
       }
@@ -625,6 +625,7 @@
       isAdmin = false;
       $("adminPanel").hidden = true;
       $("adminButton").textContent = "دخول المدير";
+      renderMembers(); // إعادة عرض القائمة لإخفاء الأزرار عند خروج المدير
     });
 
     // LISTEN FOR MEMBERS
@@ -635,12 +636,7 @@
       }));
       renderMembers();
       updateStats();
-      populateMemberSelect();
     });
-
-    function hasPaid(m) {
-      return (m.payments && m.payments.length > 0);
-    }
 
     function renderMembers() {
       const list = $("membersList");
@@ -654,24 +650,36 @@
       }
 
       list.innerHTML = filtered.map(m => {
-        const paid = hasPaid(m);
-        const count = (m.payments || []).length;
+        const payments = m.payments || [];
+        const totalAmount = payments.reduce((sum, p) => sum + (p.amount || 0), 0);
+
+        // إظهار أزرار التحكم فقط إذا كان المدير مسجلاً لدخوله
+        const adminActionsHTML = isAdmin ? `
+          <div class="quick-actions">
+            <button class="btn-action btn-add-500" onclick="window.adjustPayment('${m.id}', 500)">+500</button>
+            <button class="btn-action btn-add-2000" onclick="window.adjustPayment('${m.id}', 2000)">+2000</button>
+            <button class="btn-action btn-sub-500" onclick="window.adjustPayment('${m.id}', -500)">-500</button>
+            <button class="btn-action btn-sub-2000" onclick="window.adjustPayment('${m.id}', -2000)">-2000</button>
+          </div>
+        ` : '';
+
         return `
-          <div class="member-card" data-id="${m.id}">
-            <div class="member-main">
-              <span class="member-role">عضو</span>
-              <span class="member-name">${escapeHTML(m.name)}</span>
+          <div class="member-card">
+            <div class="member-header" data-id="${m.id}">
+              <div class="member-main">
+                <span class="member-role">عضو</span>
+                <span class="member-name">${escapeHTML(m.name)}</span>
+              </div>
+              <span class="total-badge">${totalAmount} دج</span>
             </div>
-            <span class="status-badge ${paid ? 'paid' : 'unpaid'}">
-              ${paid ? `تم الدفع (${count})` : 'لم يدفع'}
-            </span>
+            ${adminActionsHTML}
           </div>
         `;
       }).join('');
 
-      document.querySelectorAll('.member-card').forEach(card => {
-        card.addEventListener('click', () => {
-          const id = card.getAttribute('data-id');
+      document.querySelectorAll('.member-header').forEach(header => {
+        header.addEventListener('click', () => {
+          const id = header.getAttribute('data-id');
           showMemberDetails(id);
         });
       });
@@ -681,17 +689,15 @@
 
     function updateStats() {
       const total = membersCache.length;
-      const paidCount = membersCache.filter(hasPaid).length;
-      $("totalMembers").textContent = total;
-      $("paidMembers").textContent = paidCount;
-      $("unpaidMembers").textContent = total - paidCount;
-    }
+      let grandTotal = 0;
 
-    function populateMemberSelect() {
-      const sel = $("paymentMemberSelect");
-      if (!sel) return;
-      sel.innerHTML = '<option value="">-- اختر عضواً --</option>' +
-        membersCache.map(m => `<option value="${m.id}">${escapeHTML(m.name)}</option>`).join('');
+      membersCache.forEach(m => {
+        const payments = m.payments || [];
+        grandTotal += payments.reduce((sum, p) => sum + (p.amount || 0), 0);
+      });
+
+      $("totalMembers").textContent = total;
+      $("totalCollected").textContent = `${grandTotal} دج`;
     }
 
     // ADD MEMBER
@@ -713,39 +719,42 @@
       }
     });
 
-    // RECORD PAYMENT (BY PAYMENT COUNT NUMBER)
-    $("paymentForm")?.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const memberId = $("paymentMemberSelect").value;
-      const plan = $("paymentPlan").value;
-
-      if (!memberId) {
-        showMsg("adminMessage", "يرجى اختيار العضو");
-        return;
-      }
+    // QUICK PAYMENT ADJUSTMENT (+500, +2000, -500, -2000)
+    window.adjustPayment = async (memberId, amount) => {
+      if (!isAdmin) return;
 
       const member = membersCache.find(m => m.id === memberId);
       if (!member) return;
 
-      const amount = plan === "weekly" ? 500 : 2000;
-      const currentPayments = member.payments || [];
-      const nextIndex = currentPayments.length + 1;
+      let currentPayments = [...(member.payments || [])];
 
-      const paymentRecord = {
-        number: nextIndex,
-        amount: amount,
-        type: plan === "weekly" ? "أسبوعي" : "شهري"
-      };
+      if (amount > 0) {
+        currentPayments.push({
+          amount: amount,
+          type: amount === 500 ? "أسبوعي" : "شهري"
+        });
+      } else {
+        const absAmount = Math.abs(amount);
+        const lastIndex = currentPayments.map(p => p.amount).lastIndexOf(absAmount);
+        
+        if (lastIndex !== -1) {
+          currentPayments.splice(lastIndex, 1);
+        } else if (currentPayments.length > 0) {
+          currentPayments.pop();
+        } else {
+          alert("لا يوجد دفعات سابقة لخصمها لهذا العضو.");
+          return;
+        }
+      }
 
       try {
         await updateDoc(doc(db, "members", memberId), {
-          payments: arrayUnion(paymentRecord)
+          payments: currentPayments
         });
-        showMsg("adminMessage", `تم تسجيل الدَفعَة ${nextIndex} بمبلغ ${amount} دج للعضو`, true);
       } catch (err) {
-        showMsg("adminMessage", "تعذر تسجيل الدفعة");
+        alert("تعذر تحديث الدفعة.");
       }
-    });
+    };
 
     // MODAL DETAILS FUNCTIONS
     function showMemberDetails(id) {
@@ -753,9 +762,6 @@
       if (!m) return;
 
       $("modalMemberName").textContent = m.name;
-      const paid = hasPaid(m);
-      $("modalStatus").textContent = paid ? "قام بالدفع" : "لم يدفع بعد";
-      $("modalStatus").style.color = paid ? "#00e676" : "#ff3d57";
 
       const payments = m.payments || [];
       $("modalPayCount").textContent = `${payments.length} دفعات`;
@@ -768,7 +774,7 @@
         historyList.innerHTML = '<li>لا يوجد دفعات مسجلة</li>';
       } else {
         historyList.innerHTML = payments.map((p, index) => 
-          `<li><span>الدَفعة ${p.number || (index + 1)} (${p.type})</span> <strong>${p.amount} دج</strong></li>`
+          `<li>الدَفعة #${index + 1}: ${p.type || "دفعة"} - <strong>${p.amount} دج</strong></li>`
         ).join('');
       }
 
@@ -790,40 +796,26 @@
       if (!isAdmin) return;
 
       const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
+      const docPdf = new jsPDF();
 
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(16);
-      doc.text("ULTRAS THE TWELFTH PLAYER", 105, 15, { align: "center" });
-      doc.setFontSize(12);
-      doc.text("Members Payment Report", 105, 22, { align: "center" });
+      docPdf.setFontSize(16);
+      docPdf.text("ULTRAS THE TWELFTH PLAYER - MEMBERS REPORT", 105, 15, { align: "center" });
 
       const tableData = membersCache.map((m, index) => {
-        const payments = m.payments || [];
-        const count = payments.length;
-        const total = payments.reduce((s, p) => s + (p.amount || 0), 0);
-        const status = count > 0 ? "Paid" : "Unpaid";
-
-        return [
-          index + 1,
-          m.name || "Unknown",
-          "Member",
-          status,
-          `${count} payments`,
-          `${total} DZD`
-        ];
+        const count = (m.payments || []).length;
+        const total = (m.payments || []).reduce((s, p) => s + (p.amount || 0), 0);
+        return [index + 1, m.name, "MEMBER", `${count}`, `${total} DZD`];
       });
 
-      doc.autoTable({
-        startY: 30,
-        head: [["#", "Member Name", "Role", "Status", "Payments Count", "Total Paid"]],
+      docPdf.autoTable({
+        startY: 25,
+        head: [['#', 'Name', 'Role', 'Payment Count', 'Total Paid']],
         body: tableData,
-        theme: "grid",
-        headStyles: { fillColor: [0, 168, 81] },
-        styles: { halign: "center" }
+        theme: 'grid',
+        headStyles: { fillColor: [0, 230, 118], textColor: [0, 0, 0] }
       });
 
-      doc.save(`ULTRAS_Report_${new Date().toISOString().slice(0, 10)}.pdf`);
+      docPdf.save(`Ultras_Report_${new Date().toISOString().slice(0,10)}.pdf`);
     });
 
     function escapeHTML(str) {
